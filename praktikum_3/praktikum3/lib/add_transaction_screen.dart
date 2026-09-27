@@ -14,6 +14,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
   // Controller untuk mengambil text dari input
   final _titleController = TextEditingController();
   final _amountController = TextEditingController();
+  final _dateController = TextEditingController();
 
   // State untuk Dropdown
   String _selectedCategory = 'Makanan';
@@ -24,8 +25,26 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     // Bersihkan controller saat halaman ditutup untuk mencegah memory leak
     _titleController.dispose();
     _amountController.dispose();
+    _dateController.dispose();
     super.dispose();
   }
+
+  Future<void> _selectDate() async {
+  final DateTime? picked = await showDatePicker(
+    context: context,
+    initialDate: DateTime.now(),
+    firstDate: DateTime(2020),
+    lastDate: DateTime(2030),
+  );
+  if (picked != null) {
+    setState(() {
+      final day = picked.day.toString().padLeft(2, '0');
+      final month = picked.month.toString().padLeft(2, '0');
+      final year = picked.year.toString();
+      _dateController.text = '$day/$month/$year';
+    });
+  }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -102,6 +121,28 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                 },
               ),
               const SizedBox(height: 32),
+
+              TextFormField(
+                controller: _dateController,
+                readOnly: true,
+                onTap: _selectDate,
+                decoration: InputDecoration(
+                  labelText: 'Tanggal Transaksi',
+                  border: const OutlineInputBorder(),
+                  prefixIcon: const Icon(Icons.calendar_today),
+                  suffixIcon: IconButton(
+                    icon: const Icon(Icons.edit_calendar),
+                    onPressed: _selectDate,
+                  ),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Tanggal transaksi wajib diisi';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16),                
 
               // Tombol Simpan
               ElevatedButton(
