@@ -89,7 +89,7 @@ class DashboardScreen extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                   builder: (context) => const TransactionDetailScreen(
-                    title: 'Makan Siang',
+                    title: 'Makan Siang Mahal',
                     amount: '- Rp 50.000',
                     category: 'Makanan',
                     date: '13 September 2026',
